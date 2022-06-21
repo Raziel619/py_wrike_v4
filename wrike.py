@@ -40,6 +40,9 @@ class Wrike:
 
     # region Contacts
 
+    def query_contact_all(self) -> requests.Response:
+        return self.__get("contacts")
+
     def query_contact_myself(self) -> requests.Response:
         return self.__get("contacts?me=true")
 
