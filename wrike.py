@@ -47,3 +47,13 @@ class Wrike:
         return self.__get("contacts?me=true")
 
     # endregion
+
+    # region Folders
+
+    def query_folder(self, folder_id) -> requests.Response:
+        return self.__get(f"folders/{folder_id}")
+
+    def query_folder_all(self) -> requests.Response:
+        return self.__get(f"folders")
+
+    # endregion
