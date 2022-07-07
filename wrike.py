@@ -66,8 +66,9 @@ class Wrike:
 
     # region Folders
 
-    def query_folder(self, folder_id: str) -> requests.Response:
-        return self.__get(f"folders/{folder_id}")
+    def query_folders(self, ids: list) -> requests.Response:
+        ids = convert_list_to_string(ids)
+        return self.__get(f"folders/{ids}")
 
     def query_folders_all(self) -> requests.Response:
         return self.__get("folders")
@@ -81,6 +82,20 @@ class Wrike:
 
     def query_groups_all(self) -> requests.Response:
         return self.__get(f"groups")
+
+    # endregion
+
+    # region Tasks
+
+    def query_tasks(self, ids: list) -> requests.Response:
+        ids = convert_list_to_string(ids)
+        return self.__get(f"tasks/{ids}")
+
+    def query_tasks_all(self) -> requests.Response:
+        return self.__get("tasks")
+
+    def query_tasks_in_folder(self, folder_id: str) -> requests.Response:
+        return self.__get(f"folders/{folder_id}/tasks")
 
     # endregion
 
