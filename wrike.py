@@ -5,12 +5,13 @@ from py_wrike.helpers import convert_list_to_string
 
 class Wrike:
     """
-    A wrapper for Wrike API calls
+    A wrapper for Wrike API calls. Some API calls save data to a cache which this object manages. If at some point you'd like to clear those caches, simply call wrike.reinitialize()
 
-    Parameters:
-        base_url (string): Base Wrike URL, it should look like "https://<host>/api/v4/" (the trailing / is important)
-        perm_access_token (string): A permanent access token obtained from Wrike's dashboard
-        ssl_verify (bool): May need to set to false during testing
+    Args:
+        :param base_url (string): Base Wrike URL, it should look like "https://<host>/api/v4/" (the trailing / is important)
+        :param perm_access_token (string): A permanent access token obtained from Wrike's dashboard
+        :param ssl_verify (bool): May need to set to false during testing
+
     """
 
     def __init__(self, base_url: str, perm_access_token: str, ssl_verify: bool = True):
@@ -20,6 +21,34 @@ class Wrike:
             "Accept": "application/json",
             "Authorization": "Bearer " + perm_access_token,
         }
+        self.reinitialize()
+
+    def reinitialize(self):
+        self._contacts = None
+        self._custom_fields = None
+        self._folders = None
+
+    # region Properties (Does Caching)
+
+    @property
+    def contacts(self) -> list:
+        if not self._contacts:
+            self._contacts = self.query_contacts_all().json()["data"]
+        return self._contacts
+
+    @property
+    def custom_fields(self) -> list:
+        if not self._custom_fields:
+            self._custom_fields = self.query_custom_fields_all().json()["data"]
+        return self._custom_fields
+
+    @property
+    def folders(self) -> list:
+        if not self._folders:
+            self._folders = self.query_folders_all().json()["data"]
+        return self._folders
+
+    # endregion
 
     # region Base HTTP Methods
 
