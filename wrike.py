@@ -31,7 +31,7 @@ class Wrike:
     # region Properties (Does Caching)
 
     @property
-    def contacts(self) -> list:
+    def contacts(self) -> dict:
         if not self._contacts:
             all_contacts = self.query_contacts_all().json()["data"]
             self._contacts = convert_list_to_dict(all_contacts)
@@ -45,7 +45,7 @@ class Wrike:
         return self._custom_fields
 
     @property
-    def folders(self) -> list:
+    def folders(self) -> dict:
         if not self._folders:
             all_folders = self.query_folders_all().json()["data"]
             self._folders = convert_list_to_dict(all_folders)
@@ -106,7 +106,7 @@ class Wrike:
         return self.__get("folders")
 
     def query_folder_by_title(self, title: str) -> dict:
-        for folder in self.folders:
+        for key, folder in self.folders.items():
             if folder["title"] == title:
                 return folder
 
