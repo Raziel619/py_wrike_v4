@@ -1,6 +1,6 @@
 import requests
 
-from py_wrike.helpers import convert_list_to_string
+from py_wrike.helpers import convert_list_to_dict, convert_list_to_string
 
 
 class Wrike:
@@ -33,19 +33,22 @@ class Wrike:
     @property
     def contacts(self) -> list:
         if not self._contacts:
-            self._contacts = self.query_contacts_all().json()["data"]
+            all_contacts = self.query_contacts_all().json()["data"]
+            self._contacts = convert_list_to_dict(all_contacts)
         return self._contacts
 
     @property
-    def custom_fields(self) -> list:
+    def custom_fields(self) -> dict:
         if not self._custom_fields:
-            self._custom_fields = self.query_custom_fields_all().json()["data"]
+            all_custom_fields = self.query_custom_fields_all().json()["data"]
+            self._custom_fields = convert_list_to_dict(all_custom_fields)
         return self._custom_fields
 
     @property
     def folders(self) -> list:
         if not self._folders:
-            self._folders = self.query_folders_all().json()["data"]
+            all_folders = self.query_folders_all().json()["data"]
+            self._folders = convert_list_to_dict(all_folders)
         return self._folders
 
     # endregion
@@ -101,6 +104,11 @@ class Wrike:
 
     def query_folders_all(self) -> requests.Response:
         return self.__get("folders")
+
+    def query_folder_by_title(self, title: str) -> dict:
+        for folder in self.folders:
+            if folder["title"] == title:
+                return folder
 
     # endregion
 
