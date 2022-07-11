@@ -33,21 +33,21 @@ class Wrike:
     @property
     def contacts(self) -> dict:
         if not self._contacts:
-            all_contacts = self.query_contacts_all().json()["data"]
+            all_contacts = self.query_contacts_all()["data"]
             self._contacts = convert_list_to_dict(all_contacts)
         return self._contacts
 
     @property
     def custom_fields(self) -> dict:
         if not self._custom_fields:
-            all_custom_fields = self.query_custom_fields_all().json()["data"]
+            all_custom_fields = self.query_custom_fields_all()["data"]
             self._custom_fields = convert_list_to_dict(all_custom_fields)
         return self._custom_fields
 
     @property
     def folders(self) -> dict:
         if not self._folders:
-            all_folders = self.query_folders_all().json()["data"]
+            all_folders = self.query_folders_all()["data"]
             self._folders = convert_list_to_dict(all_folders)
         return self._folders
 
@@ -55,54 +55,54 @@ class Wrike:
 
     # region Base HTTP Methods
 
-    def __get(self, path: str) -> requests.Response:
+    def __get(self, path: str) -> dict:
         response = requests.get(
             self.base_url + path, headers=self.__headers, verify=self.ssl_verify
         )
-        return response
+        return response.json()
 
-    def __post(self, path: str, body: dict) -> requests.Response:
+    def __post(self, path: str, body: dict) -> dict:
         response = requests.post(
             self.base_url + path,
             json=body,
             headers=self.__headers,
             verify=self.ssl_verify,
         )
-        return response
+        return response.json()
 
     # endregion
 
     # region Contacts
-    def query_contacts(self, ids: list) -> requests.Response:
+    def query_contacts(self, ids: list) -> dict:
         ids = convert_list_to_string(ids)
         return self.__get(f"contacts/{ids}")
 
-    def query_contacts_all(self) -> requests.Response:
+    def query_contacts_all(self) -> dict:
         return self.__get("contacts")
 
-    def query_contact_me(self) -> requests.Response:
+    def query_contact_me(self) -> dict:
         return self.__get("contacts?me=true")
 
     # endregion
 
     # region Custom Fields
 
-    def query_custom_fields(self, ids: list) -> requests.Response:
+    def query_custom_fields(self, ids: list) -> dict:
         ids = convert_list_to_string(ids)
         return self.__get(f"customfields/{ids}")
 
-    def query_custom_fields_all(self) -> requests.Response:
+    def query_custom_fields_all(self) -> dict:
         return self.__get("customfields")
 
     # endregion
 
     # region Folders
 
-    def query_folders(self, ids: list) -> requests.Response:
+    def query_folders(self, ids: list) -> dict:
         ids = convert_list_to_string(ids)
         return self.__get(f"folders/{ids}")
 
-    def query_folders_all(self) -> requests.Response:
+    def query_folders_all(self) -> dict:
         return self.__get("folders")
 
     def query_folder_by_title(self, title: str) -> dict:
@@ -110,10 +110,10 @@ class Wrike:
             if folder["title"] == title:
                 return folder
 
-    def query_folder_subtrees(self, folder_id: str) -> requests.Response:
+    def query_folder_subtrees(self, folder_id: str) -> dict:
         return self.__get(f"folders/{folder_id}/folders")
 
-    def query_folder_subtrees_by_title(self, title: str) -> requests.Response:
+    def query_folder_subtrees_by_title(self, title: str) -> dict:
         folder = self.query_folder_by_title(title)
         return self.query_folder_subtrees(folder["id"])
 
@@ -121,31 +121,31 @@ class Wrike:
 
     # region Groups
 
-    def query_group(self, group_id: str) -> requests.Response:
+    def query_group(self, group_id: str) -> dict:
         return self.__get(f"groups/{group_id}")
 
-    def query_groups_all(self) -> requests.Response:
+    def query_groups_all(self) -> dict:
         return self.__get(f"groups")
 
     # endregion
 
     # region Tasks
 
-    def query_tasks(self, ids: list) -> requests.Response:
+    def query_tasks(self, ids: list) -> dict:
         ids = convert_list_to_string(ids)
         return self.__get(f"tasks/{ids}")
 
-    def query_tasks_all(self) -> requests.Response:
+    def query_tasks_all(self) -> dict:
         return self.__get("tasks")
 
-    def query_tasks_in_folder(self, folder_id: str) -> requests.Response:
+    def query_tasks_in_folder(self, folder_id: str) -> dict:
         return self.__get(f"folders/{folder_id}/tasks")
 
     # endregion
 
     # region Users
 
-    def query_user(self, user_id: str) -> requests.Response:
+    def query_user(self, user_id: str) -> dict:
         return self.get(f"users/{user_id}")
 
     # endregion
