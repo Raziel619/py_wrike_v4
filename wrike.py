@@ -110,6 +110,13 @@ class Wrike:
             if folder["title"] == title:
                 return folder
 
+    def query_folder_subtrees(self, folder_id: str) -> requests.Response:
+        return self.__get(f"folders/{folder_id}/folders")
+
+    def query_folder_subtrees_by_title(self, title: str) -> requests.Response:
+        folder = self.query_folder_by_title(title)
+        return self.query_folder_subtrees(folder["id"])
+
     # endregion
 
     # region Groups
