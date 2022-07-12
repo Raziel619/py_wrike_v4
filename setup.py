@@ -1,4 +1,8 @@
+from pkg_resources import parse_requirements
 from setuptools import setup, find_packages
+
+with open("requirements.txt") as f:
+    required = f.read().splitlines()
 
 setup(
     name="py_wrike",
@@ -10,5 +14,5 @@ setup(
     package_dir={"": "src"},
     url="https://github.com/Raziel619/py_wrike",
     keywords="wrike",
-    install_requires=["certifi", "charset-normalizer", "idna", "requests", "urllib3"],
+    install_requires=required,
 )
