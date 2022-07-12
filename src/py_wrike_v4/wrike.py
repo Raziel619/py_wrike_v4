@@ -1,6 +1,6 @@
 import requests
 
-from py_wrike.src.helpers import convert_list_to_dict, convert_list_to_string
+from .helpers import convert_list_to_dict, convert_list_to_string
 
 
 class Wrike:

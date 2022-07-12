@@ -1,4 +1,4 @@
-# py_wrike
+# py_wrike_v4
 
 A python wrapper for the Wrike API V4. This wrapper provides convenience methods for accessing Wrike's API endpoints. Be sure to familiarize yourself with their documentation [here](https://developers.wrike.com/) before using this package. Wrike uses unique IDs to identify any of their data objects. These IDs are what's used to make requests to the Wrike API. Consider the example where you'd like to query a `folder/project` but only know its title. You may first need to query all folders in the workspace then determine the folder ID by matching the title. You can then use that folder ID to perform additional queries. This package provides some methods so simplify that flow in some cases.
 
@@ -7,7 +7,7 @@ A python wrapper for the Wrike API V4. This wrapper provides convenience methods
 To get started, all you need to provide is the base API endpoint and a permanent access token. You can find documentation on how to acquire a permanent access token [here](https://developers.wrike.com/oauth-20-authorization/).
 
 ```python
-from py_wrike import Wrike
+from _py_wrike_v4 import Wrike
 
 wrike = Wrike(BASE_URL, PERM_ACCESS_TOKEN, SSL_VERIFY)
 ```
