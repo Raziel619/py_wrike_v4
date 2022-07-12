@@ -10,7 +10,7 @@ class Wrike:
     Args:
         :param base_url (string): Base Wrike URL, it should look like "https://<host>/api/v4/" (the trailing / is important)
         :param perm_access_token (string): A permanent access token obtained from Wrike's dashboard
-        :param ssl_verify (bool): May need to set to false during testing
+        :param ssl_verify (bool): Set to false during testing
 
     """
 
@@ -24,6 +24,9 @@ class Wrike:
         self.reinitialize()
 
     def reinitialize(self):
+        """
+        Clears the wrike's object data cache
+        """
         self._contacts = None
         self._custom_fields = None
         self._folders = None
