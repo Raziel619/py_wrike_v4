@@ -1,3 +1,4 @@
+from os import stat
 import requests
 
 from .helpers import convert_list_to_dict, convert_list_to_string
@@ -29,7 +30,9 @@ class Wrike:
         """
         self._contacts = None
         self._custom_fields = None
+        self._custom_statuses = None
         self._folders = None
+        self._workflows = None
 
     # region Properties (Does Caching)
 
@@ -48,11 +51,27 @@ class Wrike:
         return self._custom_fields
 
     @property
+    def custom_statuses(self) -> dict:
+        if not self._custom_statuses:
+            self._custom_statuses = {}
+            for workflow in self.workflows.values():
+                for custom_status in workflow["customStatuses"]:
+                    self._custom_statuses[custom_status["id"]] = custom_status
+        return self._custom_statuses
+
+    @property
     def folders(self) -> dict:
         if not self._folders:
             all_folders = self.query_folders_all()["data"]
             self._folders = convert_list_to_dict(all_folders)
         return self._folders
+
+    @property
+    def workflows(self) -> dict:
+        if not self._workflows:
+            workflows = self.query_workflows()["data"]
+            self._workflows = convert_list_to_dict(workflows)
+        return self._workflows
 
     # endregion
 
@@ -76,6 +95,7 @@ class Wrike:
     # endregion
 
     # region Contacts
+
     def query_contacts(self, ids: list) -> dict:
         ids = convert_list_to_string(ids)
         return self.get(f"contacts/{ids}")
@@ -96,6 +116,34 @@ class Wrike:
 
     def query_custom_fields_all(self) -> dict:
         return self.get("customfields")
+
+    # endregion
+
+    # region Extract Methods
+
+    def extract_project_status(self, folder: dict) -> str:
+        """
+        Extracts project status from a folder. Returns None if it isn't set
+        """
+        # return "test"
+        status = Wrike.extract_value_from_project("status", folder)
+        custom_status_id = Wrike.extract_value_from_project("customStatusId", folder)
+        if str(status) == "Custom" and custom_status_id:
+            status = self.custom_statuses[custom_status_id]["name"]
+
+        return status
+
+    @staticmethod
+    def extract_value_from_project(key: str, folder: dict):
+        """
+        Returns the value at specified key in a folder's 'project' object.
+        If the key doesn't exist, returns None
+        """
+        try:
+            extract = folder["project"][key]
+            return extract
+        except Exception as e:
+            return None
 
     # endregion
 
@@ -150,5 +198,12 @@ class Wrike:
 
     def query_user(self, user_id: str) -> dict:
         return self.get(f"users/{user_id}")
+
+    # endregion
+
+    # region Workflows
+
+    def query_workflows(self) -> dict:
+        return self.get("workflows")
 
     # endregion
