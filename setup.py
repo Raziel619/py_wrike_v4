@@ -8,7 +8,7 @@ long_description = (this_directory / "README.md").read_text()
 
 setup(
     name="py_wrike_v4",
-    version="0.14",
+    version="0.15",
     license="MIT",
     author="Govinda Hosein",
     author_email="raziel619dev@gmail.com",
