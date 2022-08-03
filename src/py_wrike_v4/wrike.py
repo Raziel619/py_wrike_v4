@@ -126,15 +126,17 @@ class Wrike:
         Extracts project status from a folder. Returns None if it isn't set
         """
         # return "test"
-        status = Wrike.extract_value_from_project("status", folder)
-        custom_status_id = Wrike.extract_value_from_project("customStatusId", folder)
+        status = Wrike.extract_project_value_from_folder("status", folder)
+        custom_status_id = Wrike.extract_project_value_from_folder(
+            "customStatusId", folder
+        )
         if str(status) == "Custom" and custom_status_id:
             status = self.custom_statuses[custom_status_id]["name"]
 
         return status
 
     @staticmethod
-    def extract_value_from_project(key: str, folder: dict):
+    def extract_project_value_from_folder(key: str, folder: dict):
         """
         Returns the value at specified key in a folder's 'project' object.
         If the key doesn't exist, returns None
